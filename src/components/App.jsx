@@ -1,28 +1,40 @@
-// var App = () => (
-//   <div>
-//     <Nav />
-//     <div className="col-md-7">
-//       <VideoPlayer video={window.exampleVideoData[0]} />
-//     </div>
-//     <div className="col-md-5">
-//       <VideoList videos={window.exampleVideoData}/>
-//     </div>
-//   </div>
-// );
-
 class App extends React.Component {
-  constructor() {
+  constructor({searchYouTube}) {
     super();
+    this.setContext = this.setContext.bind(this);
+    this.onVideoClick = this.onVideoClick.bind(this);
+    window.searchYouTube = window.searchYouTube.bind(this);
+
+
+    
     this.state = {
       current: window.exampleVideoData[0],
-      all: window.exampleVideoData
+      all: window.exampleVideoData,
+      query: 'nature is neat',
+      maxResults: 10
     };
+
+    var options = {
+      key: window.YOUTUBE_API_KEY,
+      query: 'nature is neat',
+      maxResults: 10
+    };
+
+    window.searchYouTube(options, this.setContext);
+
   }
 
   onVideoClick(video) {
     this.setState({
       current: video
     });
+  }
+
+  setContext(results) {
+    this.setState({
+      current: results[0],
+      all: results
+    })
   }
   
   render() {
@@ -33,7 +45,7 @@ class App extends React.Component {
           <VideoPlayer video={this.state.current} />
         </div>
         <div className="col-md-5">
-          <VideoList clickHandler={this.onVideoClick.bind(this)} videos={this.state.all}/>
+          <VideoList clickHandler={this.onVideoClick} videos={this.state.all}/>
         </div>
       </div>
     );
