@@ -1,5 +1,5 @@
-var VideoPlayer = ({video}) => (
-  <div className="video-player">
+var VideoPlayer = ({video, state}) => (
+  <div className="video-player" src={console.log(state)}>
     <div className="embed-responsive embed-responsive-16by9">
       <iframe className="embed-responsive-item" src={`https://www.youtube.com/embed/${video.id.videoId}`} allowFullScreen></iframe>
     </div>
