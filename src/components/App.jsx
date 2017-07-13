@@ -1,26 +1,26 @@
 class App extends React.Component {
-  constructor({searchYouTube}) {
-    super();
+  constructor(props) {
+    super(props);
+    
     this.setContext = this.setContext.bind(this);
     this.onVideoClick = this.onVideoClick.bind(this);
-    window.searchYouTube = window.searchYouTube.bind(this);
-
-
+    this.onSearch = this.onSearch.bind(this);
+    this.throttledSearch = _.debounce(this.props.searchYouTube, 500);
     
     this.state = {
-      current: window.exampleVideoData[0],
-      all: window.exampleVideoData,
-      query: 'nature is neat',
-      maxResults: 10
+      current: null,
+      all: [],
+      query: 'soccer',
+      max: 5
     };
 
     var options = {
       key: window.YOUTUBE_API_KEY,
-      query: 'nature is neat',
-      maxResults: 10
+      query: this.state.query,
+      max: this.state.max
     };
 
-    window.searchYouTube(options, this.setContext);
+    this.props.searchYouTube(options, this.setContext);
 
   }
 
@@ -34,13 +34,18 @@ class App extends React.Component {
     this.setState({
       current: results[0],
       all: results
-    })
+    });
+  }
+  
+  onSearch(event, query) {
+    event.preventDefault(); 
+    this.throttledSearch({key: window.YOUTUBE_API_KEY, query: query, maxResults: 5}, this.setContext);
   }
   
   render() {
     return (
       <div>
-        <Nav />
+        <Nav searchFunction={this.onSearch.bind(this)} />
         <div className="col-md-7">
           <VideoPlayer video={this.state.current} />
         </div>
